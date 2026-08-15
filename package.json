@@ -5,6 +5,7 @@
   "version": "1.0.6",
   "publisher": "whoami730",
   "icon": "icon.png",
+  "type": "module",
   "repository": {
     "type": "git",
     "url": "https://github.com/whoami730/cython-enhanced.git"
