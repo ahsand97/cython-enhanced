@@ -3,10 +3,14 @@
  * Build TextMate grammar from YAML to plist (.tmLanguage).
  * Replaces syntaxdev + first-mate + oniguruma to avoid native build.
  */
-import { readFileSync, existsSync, mkdirSync, writeFileSync } from 'fs';
-import { join, resolve } from 'path';
-import { load } from 'js-yaml';
-import { build } from 'plist';
+import { readFileSync, existsSync, mkdirSync, writeFileSync } from "fs";
+import { join, resolve } from "path";
+import { load } from "js-yaml";
+import { fileURLToPath } from "url";
+import { dirname } from "path";
+
+import pkg from "plist";
+const { build } = pkg;
 
 /**
  * @param {string} yamlText raw YAML for the TextMate grammar
@@ -22,15 +26,18 @@ function tmLanguageXmlFromGrammarYaml(yamlText) {
  * @returns {string} plist XML for syntaxes/cython.tmLanguage
  */
 function buildTmLanguageXmlForRepo(repoRoot) {
-  const inputPath = join(repoRoot, 'grammars', 'cython.syntax.yaml');
-  const yamlText = readFileSync(inputPath, 'utf8');
+  const inputPath = join(repoRoot, "grammars", "cython.syntax.yaml");
+  const yamlText = readFileSync(inputPath, "utf8");
   return tmLanguageXmlFromGrammarYaml(yamlText);
 }
 
 function main() {
-  const repoRoot = resolve(__dirname, '..');
-  const outputDir = join(repoRoot, 'syntaxes');
-  const outputPath = join(outputDir, 'cython.tmLanguage');
+  const __filename = fileURLToPath(import.meta.url);
+  const __dirname = dirname(__filename);
+
+  const repoRoot = resolve(__dirname, "..");
+  const outputDir = join(repoRoot, "syntaxes");
+  const outputPath = join(outputDir, "cython.tmLanguage");
 
   const plistXml = buildTmLanguageXmlForRepo(repoRoot);
 
@@ -38,9 +45,9 @@ function main() {
     mkdirSync(outputDir, { recursive: true });
   }
 
-  writeFileSync(outputPath, plistXml, 'utf8');
+  writeFileSync(outputPath, plistXml, "utf8");
 
-  console.log('Built syntaxes/cython.tmLanguage');
+  console.log("Built syntaxes/cython.tmLanguage");
 }
 
 export default {
@@ -48,6 +55,6 @@ export default {
   tmLanguageXmlFromGrammarYaml,
 };
 
-if (require.main === module) {
+if (import.meta.main) {
   main();
 }
